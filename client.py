@@ -6,6 +6,37 @@ from urllib.parse import quote_plus
 
 Response = namedtuple('Response', ['status', 'headers', 'body'])
 
+
+class Response:
+    def __init__(self, raw_response):
+        """
+        parse a response bytes into a Response object with members
+
+        status  : http status code line of the reposne
+        headers : a dict whose keys are http header keys, values are
+                  http header values
+        body    : the raw body of the response
+        """
+        DELIM = '\r\n'
+        head, self.body = raw_response.decode('utf-8').split(DELIM*2)
+        self.status, *header_lines = head.split(DELIM)
+
+        self.headers = dict(line.split(': ') for line in header_lines)
+
+
+    def pretty_print(self, verbose=False):
+        if verbose:
+            print('Status: {}'.format(self.status))
+            print('Headers:')
+            for k, v in self.headers.items():
+                print('  {}: {}'.format(k, v))
+
+            print('Body:')
+            print(' ' + repr(self.body))
+        else:
+            print(self.body)
+
+
 def build_request(**kwargs):
     """
     from a basic template, according to the fields specified in kwargs,
@@ -40,29 +71,8 @@ def read_until_exhausted(sock, chunk_size=1024):
         yield data
 
 
-def parse_response(response):
-    """
-    parse a response bytes into a namedtuple with members
-
-    status  : http status code line of the reposne
-    headers : a dict whose keys are http header keys, values are
-              http header values
-    body    : the raw body of the response
-    """
-    DELIM = '\r\n'
-    head, body = response.decode('utf-8').split(DELIM*2)
-    status, *header_lines = head.split(DELIM)
-
-    headers = dict(line.split(': ') for line in header_lines)
-
-    return Response(status, headers, body)
-
-
-def pretty_print(response):
-    response
-
 def main(portnumber, *, endpoint='echo.php', message='Hello, world!',
-         hostname='127.0.0.1'):
+         hostname='127.0.0.1', verbose:'v'=False):
     """
     http exercise.
 
@@ -82,18 +92,10 @@ def main(portnumber, *, endpoint='echo.php', message='Hello, world!',
     sock.sendall(build_request(endpoint=endpoint, message=message_qstring,
                                hostname=hostname, portnumber=port))
 
-    response = b''.join([chunk for chunk in read_until_exhausted(sock)])
+    raw_response = b''.join([chunk for chunk in read_until_exhausted(sock)])
 
-    status, headers, body = parse_response(response)
-
-    print('Status: {}'.format(status))
-    print('Headers:')
-    for k, v in headers.items():
-        print('  {}: {}'.format(k, v))
-
-    print('Body:')
-    print(' ' + repr(body))
-
+    resp = Response(raw_response)
+    resp.pretty_print(verbose)
 
 if __name__ == '__main__':
     clize.run(main)
