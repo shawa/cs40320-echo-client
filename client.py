@@ -1,6 +1,7 @@
 import clize
 import socket
 import time
+import sys
 from collections import namedtuple
 from urllib.parse import quote_plus
 
@@ -87,7 +88,13 @@ def main(portnumber, *, endpoint='echo.php', message='Hello, world!',
     message_qstring = quote_plus(message)
 
     sock = socket.socket()
-    sock.connect((hostname, port))
+
+    try:
+        sock.connect((hostname, port))
+    except ConnectionRefusedError as e:
+        print('{}\nBad hostname ({}) or port ({})?'
+              .format(e, hostname, port))
+        sys.exit(1)
 
     sock.sendall(build_request(endpoint=endpoint, message=message_qstring,
                                hostname=hostname, portnumber=port))
