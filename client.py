@@ -5,8 +5,6 @@ import sys
 from collections import namedtuple
 from urllib.parse import quote_plus
 
-Response = namedtuple('Response', ['status', 'headers', 'body'])
-
 
 class Response:
     def __init__(self, raw_response):
@@ -23,7 +21,6 @@ class Response:
         self.status, *header_lines = head.split(DELIM)
 
         self.headers = dict(line.split(': ') for line in header_lines)
-
 
     def pretty_print(self, verbose=False):
         if verbose:
