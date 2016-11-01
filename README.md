@@ -1,6 +1,19 @@
 # cs4032 Lab 1 - Echo Client
 
-Depends on [`clize`](https://github.com/epsy/clize) for pain-free CLI generation
+Depends on python3 for runtime.
+Depends on [`clize`](https://github.com/epsy/clize) for pain-free CLI generation.
+
+## Setup/running
+Ensure python3 is installed and that `venv`s are working.
+
+Then:
+
+```
+./createvirtualenv.sh
+./run.sh <ARGUMENTS>
+```
+
+For possible `<ARGUMENTS>`, run `./env/bin/python3 client.py -h` or see:
 
 ```
 Usage: client.py [OPTIONS] portnumber
