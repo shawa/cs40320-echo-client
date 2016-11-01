@@ -79,6 +79,8 @@ def main(portnumber, *, endpoint='echo.php', message='Hello, world!',
     endpoint: name of the endpoint to request, eg 'echo.php'
 
     message: message to send to echo server
+
+    hostname: address/hostname of server to connect to
     """
 
     port = int(portnumber)
