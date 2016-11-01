@@ -9,8 +9,14 @@ Ensure python3 is installed and that `venv`s are working.
 Then:
 
 ```
+# initialize a venv and install dependencies
 ./createvirtualenv.sh
-./run.sh <ARGUMENTS>
+
+# use env created for this projct
+source env/bin/activate
+
+# show usage instructions
+python3 client.py -h
 ```
 
 For possible `<ARGUMENTS>`, run `./env/bin/python3 client.py -h` or see:
@@ -32,4 +38,10 @@ Options:
 
 Other actions:
   -h, --help       Show the help
+```
+
+
+Example run:
+
+```
 ```
